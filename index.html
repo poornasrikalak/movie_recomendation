@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Movie Recommendation Portal</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f6f8fa;
+      color: #2c3e50;
+    }
+
+    header {
+      background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+      padding: 25px 0;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    header h1 {
+      color: #ffffff;
+      font-size: 34px;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    label, select {
+      font-size: 18px;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    select {
+      width: 100%;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background: linear-gradient(90deg, #203a43, #2c5364);
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 17px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: linear-gradient(90deg, #2c5364, #203a43);
+    }
+
+    .result {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 30px;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .poster {
+      flex: 1 1 40%;
+    }
+
+    .poster img {
+      width: 100%;
+      border-radius: 10px;
+      max-height: 350px;
+      object-fit: cover;
+    }
+
+    .details {
+      flex: 1 1 55%;
+    }
+
+    .details h3 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .details a {
+      display: inline-block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #2c5364;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .details a:hover {
+      text-decoration: underline;
+    }
+
+    .ott {
+      font-size: 16px;
+      margin-top: 8px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎥 Movie Recommendation Portal</h1>
+  </header>
+
+  <div class="container">
+    <label for="language">Select Language:</label>
+    <select id="language">
+      <option value="telugu">Telugu</option>
+      <option value="hindi">Hindi</option>
+      <option value="english">English</option>
+    </select>
+
+    <label for="genre">Select Genre:</label>
+    <select id="genre">
+      <option value="romance">Romance</option>
+      <option value="action">Action</option>
+      <option value="comedy">Comedy</option>
+      <option value="thriller">Thriller</option>
+      <option value="drama">Drama</option>
+    </select>
+
+    <button onclick="showRecommendation()">🎬 Recommend Movie</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    const movieData = {
+      telugu: {
+        romance: { name: "Hi Nanna", image: "romance.jpg", link: "https://youtu.be/tdKdozGeIeE?si=ktm2eauUOhJXToBG", ott: "Netflix" },
+        action: { name: "Pushpa", image: "action.jpg", link: "https://www.youtube.com/watch?v=Q1NKMPhP8PY", ott: "Amazon Prime Video" },
+        comedy: { name: "Jathi Ratnalu", image: "comedy.jpg", link: "https://www.youtube.com/watch?v=NPjJrRu2ekY", ott: "Amazon Prime Video" },
+        thriller: { name: "Hit 3", image: "thriller.jpg", link: "https://www.youtube.com/watch?v=53vy3vvTSog", ott: "Amazon Prime Video" },
+        drama: { name: "Mahanati", image: "drama.jpg", link: "https://www.youtube.com/watch?v=OUh8kVUX9oQ", ott: "Amazon Prime Video" }
+      },
+      hindi: {
+        romance: { name: "Sanam Teri kasam", image: "sanam.jpg", link: "https://youtu.be/upAe4PtiMnw?si=lWQFaQyHGnGtW-Q_", ott: "Netflix" },
+        action: { name: "War", image: "war.jpg", link: "https://www.youtube.com/watch?v=tQ0mzXRk-oM", ott: "Amazon Prime Video" },
+        comedy: { name: "3 Idiots", image: "3idiots.jpg", link: "https://www.youtube.com/watch?v=xvszmNXdM4w", ott: "Netflix" },
+        thriller: { name: "Kahaani", image: "kaahani.jpg", link: "https://www.youtube.com/watch?v=AVAk2kG_Bo4", ott: "Zee5" },
+        drama: { name: "Taare Zameen Par", image: "taare.jpeg", link: "https://www.youtube.com/watch?v=tn_2Ie_jtX8", ott: "Disney+ Hotstar" }
+      },
+      english: {
+        romance: { name: "The Notebook", image: "notebook.jpg", link: "https://www.youtube.com/watch?v=yDJIcYE32NU", ott: "Netflix" },
+        action: { name: "John Wick", image: "johnwick.jpg", link: "https://www.youtube.com/watch?v=2AUmvWm5ZDQ", ott: "Amazon Prime Video" },
+        comedy: { name: "The Intern", image: "intern.jpg", link: "https://www.youtube.com/watch?v=ZU3Xban0Y6A", ott: "Amazon Prime Video" },
+        thriller: { name: "Inception", image: "nception.jpg", link: "https://www.youtube.com/watch?v=YoHD9XEInc0", ott: "Netflix" },
+        drama: { name: "The Pursuit of Happyness", image: "pursuit.jpg", link: "https://www.youtube.com/watch?v=DMOBlEcRuw8", ott: "Netflix" }
+      }
+    };
+
+    function showRecommendation() {
+      const lang = document.getElementById("language").value;
+      const genre = document.getElementById("genre").value;
+      const movie = movieData[lang][genre];
+      const result = document.getElementById("result");
+
+      result.innerHTML = `
+        <div class="poster">
+          <img src="${movie.image}" alt="${movie.name}">
+        </div>
+        <div class="details">
+          <h3>${movie.name}</h3>
+          <p><strong>Watch on:</strong> ${movie.ott}</p>
+          <a href="${movie.link}" target="_blank">▶ Watch Trailer</a>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
